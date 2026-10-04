@@ -77,6 +77,32 @@ STAGED: demo-v3-FINAL 2.mov
 staging: ~/Downloads/_待删_20250822   ·   612M
 ```
 
+**Phases 3–4 — you pick the axis, it proposes the structure, you approve, then it moves:**
+
+```
+You:    organize ~/Desktop/client-work
+Claude: [profile + dedupe + read]  86 files · 2 exact dups staged · 3 version chains found
+        How should this be grouped?  ① by client  ② by project stage  ③ by date  ④ by file type
+You:    by client, then by stage
+
+Proposed structure (nothing moved yet):
+
+  before                                after
+  client-work/                          client-work/
+  ├── acme_brief.pdf                    ├── Acme/
+  ├── acme-contract-signed.pdf          │   ├── 1-brief/      acme_brief.pdf
+  ├── Untitled.docx      ← Acme SOW     │   ├── 2-contract/   acme-contract-signed.pdf · Untitled.docx
+  ├── deck_v2.key                       │   └── 3-delivery/   deck_v2.key · deck_final.key   (version chain, kept both)
+  ├── deck_final.key                    ├── Northwind/
+  ├── nw-invoice-0412.pdf               │   └── 4-billing/    nw-invoice-0412.pdf
+  ├── passport-scan.jpg  ← sensitive    └── _flagged/         passport-scan.jpg  → suggest moving out of a work folder
+  └── …
+
+Approve, adjust, or rename the axis?
+```
+
+`Untitled.docx` lands under Acme because its first page names Acme, not because of its filename. The version chain is grouped, never pruned for you.
+
 ## Why it works on *any* folder (not just office docs)
 
 - **Pluggable readers with graceful degradation.** Office files, HTML, PDF, images (EXIF), audio/video (ffprobe), code, archives each have a reader; anything unknown falls back to name + size + date. It never hard-fails on a format it doesn't know.
@@ -92,7 +118,13 @@ staging: ~/Downloads/_待删_20250822   ·   612M
 
 ## Install & trigger
 
-Copy `folder-organizer/` into your Claude skills directory (e.g. `~/.claude/skills/`). It triggers on requests like *"organize this folder / clean up my desktop / declutter Downloads / 帮我整理这个文件夹 / 这堆文件归一下类 / 有一堆重复和版本残留"*.
+The repo root *is* the skill folder, so one clone installs it:
+
+```bash
+git clone https://github.com/Minerva67/folder-organizer.git ~/.claude/skills/folder-organizer
+```
+
+No slash command needed. It triggers on requests like *"organize this folder / clean up my desktop / declutter Downloads / 帮我整理这个文件夹 / 这堆文件归一下类 / 有一堆重复和版本残留"*.
 
 ## Requirements
 
